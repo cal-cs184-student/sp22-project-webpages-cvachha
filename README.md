@@ -1,11 +1,13 @@
 # CS184 Project Webpage Repo
 
-The goal of this repo is to provide a template from which students can host CS184 project writeups. 
+## Project Write Ups
+#
+### Project 1: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj1/
 
-## Enabling Github Pages
+### Project 2: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj2/
 
-To enable Github pages, go to the 'Settings' tab then click on 'Pages'. Under 'Source', make sure that the branch is set to 'master' and the folder is set to 'root'. If these settings are correct, navigating to the github page link should render index.html
+### Project 3-1: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj3-1/
 
-## Adding Project Webpages
+### Project 3-2: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj3-2/
 
-There are 5 folders, one for each project. Each contains an index.html file. When the links from the mainpage are clicked, these files will be loaded, so edit these to add your project webpages.
+### Project 4: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj4/
