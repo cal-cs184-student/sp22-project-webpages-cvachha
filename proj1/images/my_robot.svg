@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.4, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!-- This SVG shows the shapes partially resembling a waving lego minifig-->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="500.0px" height="500.0px" viewBox="0 0 500 500" enable-background="new 0 0 500 500"
+	 xml:space="preserve">
+
+<g transform="translate(250 250)">
+	<!-- torso -->
+	<g transform="scale(1,0.85)">
+		<polygon fill="#DD1A21" points="-38,-50 38,-50 -50,50 "/>
+		<polygon fill="#DD1A21" points="-50,50 38,-50 50,50"/>
+
+	</g>
+
+	<!-- head -->
+	<g transform="translate(0 -82)">
+		<g transform="rotate(0)">
+			<g transform="scale(.62 .62)">
+				<polygon fill="#F7D112" points="-50,-50 50,-50 -50,50 "/>
+				<polygon fill="#F7D112" points="-50,50 50,-50 50,50"/>
+			</g>
+		</g>
+	</g>
+
+	<!-- left leg -->
+	<g transform="translate(-25 87)">
+		<g transform="scale(.48 0.8)">
+			<polygon fill="#006CB7" points="-50,-50 50,-50 -50,50 "/>
+			<polygon fill="#006CB7" points="-50,50 50,-50 50,50"/>
+		</g>
+		<g transform="translate(0 52)">
+			<g transform="scale(.48 .2)">
+				<polygon fill="#0099D4" points="-50,-50 50,-50 -50,50 "/>
+				<polygon fill="#0099D4" points="-50,50 50,-50 50,50"/>
+			</g>
+		</g>
+	</g>
+
+	<!-- right leg -->
+	<g transform="translate(25 87)">
+		<g transform="scale(.48 0.8)">
+			<polygon fill="#006CB7" points="-50,-50 50,-50 -50,50 "/>
+			<polygon fill="#006CB7" points="-50,50 50,-50 50,50"/>
+		</g>
+		<g transform="translate(0 52)">
+			<g transform="scale(.48 .2)">
+				<polygon fill="#0099D4" points="-50,-50 50,-50 -50,50 "/>
+				<polygon fill="#0099D4" points="-50,50 50,-50 50,50"/>
+			</g>
+		</g>
+	</g>
+
+	<!-- left arm -->
+	<g transform="translate(-70 -45)">
+		<g transform="rotate(60)">
+			<g transform="scale(.65 .2)">
+				<polygon fill="#EF161F" points="-50,-50 50,-50 -50,50 "/>
+				<polygon fill="#EF161F" points="-50,50 50,-50 50,50"/>
+			</g>
+		</g>
+		<g transform="rotate(65)">
+			<g transform="translate(-50 2)">
+				<g transform="scale(.25 .2)">
+					<polygon fill="#F7D112" points="-50,-50 50,-50 -50,50 "/>
+					<polygon fill="#F7D112" points="-50,50 50,-50 50,50"/>
+				</g>
+			</g>
+		</g>
+		
+	</g>
+
+	<!-- right arm -->
+	<g transform="translate(60 0)">
+		<g transform="rotate(70)">
+			<g transform="scale(.65 .2)">
+				<polygon fill="#EF161F" points="-50,-50 50,-50 -50,50 "/>
+				<polygon fill="#EF161F" points="-50,50 50,-50 50,50"/>
+			</g>
+		</g>
+		<g transform="rotate(65)">
+			<g transform="translate(50 5)">
+				<g transform="scale(.25 .2)">
+					<polygon fill="#F7D112" points="-50,-50 50,-50 -50,50 "/>
+					<polygon fill="#F7D112" points="-50,50 50,-50 50,50"/>
+				</g>
+			</g>
+		</g>
+	</g>
+
+</g>
+
+
+</svg>
