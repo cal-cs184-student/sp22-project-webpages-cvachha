@@ -2,6 +2,8 @@
 ## Cyrus Vachha (3034867551)
 ### Spring 2022 
 
+### URL: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj1/
+
 ## Overview
 In this project, I implemented a rasterizer which displays and shades points, lines, and triangles with image sampling methods. I also implemented image texture mapping along with different pixel sampling methods. In addition, I  implemented level sampling which allows for rasterizing image textures at varying levels. I find this project very interesting since I use Photoshop and am vaguely familiar with the terms rasterize or bicubic/bilinear sampling, and now after doing this project I have a better understanding of how that works. I have also heard of terms such as mipmaps, anti-aliasing, and level sampling used in game engines and game programming, so learning how it works and is implemented helps me gain a better understanding on how game rendering works. I also like that we learn multiple methods of sampling including thinking about space and time performance since those are essential in rendering graphics. I also 3D model in Blender and am familiar with using texture UV mapping on 3D meshes, so I found learning and implementing texture mapping to be very insightful on the mechanics of these software tools.
 
