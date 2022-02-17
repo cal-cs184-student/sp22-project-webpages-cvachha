@@ -3,7 +3,7 @@
 ### Spring 2022 
 
 ## Overview
-In this project, I implemented a rasterizer which displays and shades points, lines, triangles with image sampling methods. I also implemented image texture mapping along with different pixel sampling methods. In addition, I also implemented level sampling which allows for rasterizing image textures at varying levels. I find this project very interesting since I use Photoshop and am vaguely familiar with the terms rasterize or bicubic/bilinear sampling, and now after doing this project I have a better understanding of how that works. I have also heard of terms such as mipmaps, anti-aliasing, and level sampling used in game engines and game programming, so learning how it works and is implemented helps me gain a better understanding on how game rendering works. I also like that we learn multiple methods of sampling including thinking about space and time performance since those are essential in rendering graphics. I also 3D model in Blender and am familiar with using texture UV mapping on 3D meshes, so I found learning and implementing texture mapping to be very insightful on the mechanics of these software tools.
+In this project, I implemented a rasterizer which displays and shades points, lines, and triangles with image sampling methods. I also implemented image texture mapping along with different pixel sampling methods. In addition, I  implemented level sampling which allows for rasterizing image textures at varying levels. I find this project very interesting since I use Photoshop and am vaguely familiar with the terms rasterize or bicubic/bilinear sampling, and now after doing this project I have a better understanding of how that works. I have also heard of terms such as mipmaps, anti-aliasing, and level sampling used in game engines and game programming, so learning how it works and is implemented helps me gain a better understanding on how game rendering works. I also like that we learn multiple methods of sampling including thinking about space and time performance since those are essential in rendering graphics. I also 3D model in Blender and am familiar with using texture UV mapping on 3D meshes, so I found learning and implementing texture mapping to be very insightful on the mechanics of these software tools.
 
 ## Section I: Rasterization
 
@@ -18,35 +18,33 @@ My algorithm rasterizes by finding the “bounding box” of the triangle to ren
 
 My algorithm first finds the “bounding box” of the triangle to render given the points (xi,yi) 0 <= i =< 2 by finding the min and max of the x and y coordinates (this is to find a range of values to sample from and reduce the number of calls).Then it iterates over each point in the box and checks if it is in the triangle and samples the color to fill the pixel.
 
-**Show a png screenshot of basic/test4.svg with the default viewing parameters and with the pixel inspector centered on an interesting part of the scene.**
+**Screenshot of basic/test4.svg**
 
 ![Test 4 Rasterized](images/triangle_rasterize_cs184_small.png)
+
 Here the jagged edges of the triangle side are visible.
 
 
 ### Part 2: Antialiasing triangles
 
-**Walk through your supersampling algorithm and data structures. Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles.**
+**Walk through your supersampling algorithm and data structures**
 
 
 Supersampling is a method of anti aliasing which increases the visual quality of an image by rendering a higher resolution image and down sampling it to remove jagged edges. This allows us to view images at a simulated higher resolution and image quality by showing smoother edges.
 
-In my project, I implemented supersampling by first coming up with a structure to facilitate a dynamic sample buffer that would change its size when supersampling was active. The sample_buffer would scale according to the sample_rate given by the user, and the svg would rasterize on to the scaled sample_buffer. To render the image, the sample_buffer would be downsampled back down to its original size by finding the average color of the sqrt(sample_rate) x sqrt(sample_rate) pixel blocks. The sample_buffer acts as a large array (of length width*height*sample_rate) that takes in pixel Color vectors. The rgbframebuffer is a large array that takes in the individual RGB values of the pixel to rasterize the image in its original coordinates.
+In my project, I implemented supersampling by first coming up with a structure to facilitate a dynamic sample buffer that would change its size when supersampling was active. The `sample_buffer` would scale according to the `sample_rate` given by the user, and the svg would rasterize on to the scaled `sample_buffer`. To render the image, the `sample_buffer` would be downsampled back down to its original size by finding the average color of the `sqrt(sample_rate) x sqrt(sample_rate)` pixel blocks. The `sample_buffer` acts as a large array (of length `width*height*sample_rate`) that takes in pixel Color vectors. The rgbframebuffer is a large array that takes in the individual RGB values of the pixel to rasterize the image in its original coordinates.
 
 I first edited the `set_sample_rate` and implemented the `resolve_framebuffer` function. The `resolve_framebuffer` function would sample the average color of pixels from blocks the size of the sampling rate (2x2 for 4/pixel or 4x4 for 16/pixel) from the sample buffer. These values are written to the final rgbframebuffer which will display the downsampled image. 
 
-Then, I updated my rasterize_triange function to support rasterizing onto the new samplebuffer. To do this, I would scale each of the coordinates of the triangle according to the square root of the sampling rate. For example to translate original coordinates to the new scaled sample buffer coordinates (x0, y0) -> (sample_rate*x0, sample_rate*y0). I then realized that I needed to create a new method of filling in the pixels into the sample buffer, so I adapted the rasterize_point and fill_pixel function to fit in the rasterize_triangle function and edited the indices in the sample buffer assignment to take the sample_rate into account: `sample_buffer[sy * (width * sqrt(sample_rate) + sx] = color`.
+Then, I updated my rasterize_triange function to support rasterizing onto the new samplebuffer. To do this, I would scale each of the coordinates of the triangle according to the square root of the sampling rate. For example to translate original coordinates to the new scaled sample buffer coordinates (x0, y0) -> (sample_rate * x0, sample_rate * y0). I then realized that I needed to create a new method of filling in the pixels into the sample buffer, so I adapted the rasterize_point and fill_pixel function to fit in the rasterize_triangle function and edited the indices in the sample buffer assignment to take the sample_rate into account: `sample_buffer[sy * (width * sqrt(sample_rate) + sx] = color`.
 
 When I ran this, I noticed that the test1 flower svg image, border lines, and color wheel started to fade into the background as I increased the sampling rate, so I removed the anti aliasing from the points and lines by editing the fill_pixel function to rasterize a pixel block of sqrt(sample_rate) x sqrt(sample_rate) for each pixel it is called on. This essentially rasterized the same pixel in a pixel block so when downsampled it remained the same pixel color value.
 
-To prevent the rasterize window from crashing when resizing it, I edited the `set_framebuffer_target` to resize the sample_buffer by an additional factor of the sample_rate.
+To prevent the window from crashing when resizing it, I edited the `set_framebuffer_target` to resize the sample_buffer by an additional factor of the sample_rate.
 
 I added a few other changes to adjust for any unexpected issues from the above changes and tried my best to prevent any random crashes or memory errors (which I encountered frequently when writing these functions). I finally applied these changes to the rest of the rasterize_triange variant functions (color interpolation and texture mapping).
 
 When applying supersampling to the triangles and images, it has a subtle, but noticeable improvement on the edges and gives the entire image a higher resolution look despite it being the same resolution as a non supersampled image. For instance, the cube (test5.svg) looks much cleaner and less pixelated by having smoother edges.
-
-
-**Show png screenshots of basic/test4.svg with the default viewing parameters and sample rates 1, 4, and 16 to compare them side-by-side. Position the pixel inspector over an area that showcases the effect dramatically; for example, a very skinny triangle corner. Explain why these results are observed.**
 
 
 ![Test 4 Supersampling Comparison](images/supersampling_comparison_diagram_cs184_proj1.png)
@@ -57,9 +55,8 @@ I chose to focus on one of the thin edges of a red triangle to find visible diff
 
 ### Part 3: Transforms
 
-**Create an updated version of svg/transforms/robot.svg with cubeman doing something more interesting, like waving or running. Feel free to change his colors or proportions to suit your creativity. Save your svg file as my_robot.svg in your docs/ directory and show a png screenshot of your rendered drawing in your write-up. Explain what you were trying to do with cubeman in words.**
-
 I transformed my robot to resemble a Lego Minifigure and accordingly scaled and rotated the components as well as changed the scaling of one of the edges for the torso by changing the triangle points.
+I have placed it in svg/transforms/my_robot.svg in the project directory and I placed it in the images folder in the site repo.
 
 ![Transformations Custom Lego](images/my_robot_diagram_small.png)
 
@@ -67,7 +64,7 @@ I transformed my robot to resemble a Lego Minifigure and accordingly scaled and 
 
 ### Part 4: Barycentric coordinates
 
-**Explain barycentric coordinates in your own words and use an image to aid you in your explanation. One idea is to use a svg file that plots a single triangle with one red, one green, and one blue vertex, which should produce a smoothly blended color triangle.**
+**Explain barycentric coordinates in your own words and use an image to aid you in your explanation.**
 
 Barycentric coordinates are points that represent the proportional distance of a specific point relative to other given points (vertices of the triangle in this case) as a weighted average.
 
@@ -80,10 +77,6 @@ Essentially it is an interpolation between the vertices. In this example we are 
 ![Barycentric Coordinates Triangle Diagram](images/barycentric_triangle_diagram_small.png)
 
 To demonstrate this up close, I edited the color wheel svg file to include just one color triangle where I set each vertex to Red, Green, and Blue individually. Here, we can see how at each vertex one full color channel is present while the other two color channels are missing. Each pixel in the triangle displays the colors of the weighted averages of the distances from each vertex corner. For example, the top vertex is colored pure Red while the midpoint of the left side of the triangle is primarily a combination of Red and Green. The center point would be a combination of all three colors equally.
-
-
-**Show a png screenshot of svg/basic/test7.svg with default viewing parameters and sample rate 1. If you make any additional images with color gradients, include them.**
-
 
 
 
