@@ -3,7 +3,7 @@
 ### Spring 2022 
 
 ## Overview
-This project creates a rasterizer.
+In this project, I implemented a rasterizer which displays and shades points, lines, triangles with image sampling methods. I also implemented image texture mapping along with different pixel sampling methods. In addition, I also implemented level sampling which allows for rasterizing image textures at varying levels. I find this project very interesting since I use Photoshop and am vaguely familiar with the terms rasterize or bicubic/bilinear sampling, and now after doing this project I have a better understanding of how that works. I have also heard of terms such as mipmaps, anti-aliasing, and level sampling used in game engines and game programming, so learning how it works and is implemented helps me gain a better understanding on how game rendering works. I also like that we learn multiple methods of sampling including thinking about space and time performance since those are essential in rendering graphics. I also 3D model in Blender and am familiar with using texture UV mapping on 3D meshes, so I found learning and implementing texture mapping to be very insightful on the mechanics of these software tools.
 
 ## Section I: Rasterization
 
@@ -20,7 +20,7 @@ My algorithm first finds the “bounding box” of the triangle to render given 
 
 **Show a png screenshot of basic/test4.svg with the default viewing parameters and with the pixel inspector centered on an interesting part of the scene.**
 
-![Test 4 Rasterized](images/triangle_rasterize_cs184_diagram_1.png)
+![Test 4 Rasterized](images/triangle_rasterize_cs184_small.png)
 Here the jagged edges of the triangle side are visible.
 
 
@@ -61,7 +61,7 @@ I chose to focus on one of the thin edges of a red triangle to find visible diff
 
 I transformed my robot to resemble a Lego Minifigure and accordingly scaled and rotated the components as well as changed the scaling of one of the edges for the torso by changing the triangle points.
 
-![Transformations Custom Lego](images/my_robot_diagram_cs184_diagram.png)
+![Transformations Custom Lego](images/my_robot_diagram_small.png)
 
 ## Section II: Sampling
 
@@ -71,13 +71,13 @@ I transformed my robot to resemble a Lego Minifigure and accordingly scaled and 
 
 Barycentric coordinates are points that represent the proportional distance of a specific point relative to other given points (vertices of the triangle in this case) as a weighted average.
 
-![Color Wheel](images/colorwheel_diagram_cs184.png)
+![Color Wheel](images/colorwheel_diagram_small.png)
 
 I implemented this by using a similar rasterization method as the initial raseterize_triange function, and then to choose the color, I used the linear interpolation formulas to calculate alpha, beta, and gamma to construct the blended color, interpolated from the colors from each of the three vertices.
 
 Essentially it is an interpolation between the vertices. In this example we are creating a color wheel which gives us a color gradient and blend of many colors. Here, at every pixel, we use Barycentric coordinates to interpolate between the color RGB values to get a smooth interpolation across the colors.
 
-![Barycentric Coordinates Triangle Diagram](images/barycentric_triangle_diagram_cs184_diagram_1.png)
+![Barycentric Coordinates Triangle Diagram](images/barycentric_triangle_diagram_small.png)
 
 To demonstrate this up close, I edited the color wheel svg file to include just one color triangle where I set each vertex to Red, Green, and Blue individually. Here, we can see how at each vertex one full color channel is present while the other two color channels are missing. Each pixel in the triangle displays the colors of the weighted averages of the distances from each vertex corner. For example, the top vertex is colored pure Red while the midpoint of the left side of the triangle is primarily a combination of Red and Green. The center point would be a combination of all three colors equally.
 
@@ -139,7 +139,7 @@ To visualize the level sampling, I followed the advice of an instructor on Piazz
 
 **You can now adjust your sampling technique by selecting pixel sampling, level sampling, or the number of samples per pixel. Describe the tradeoffs between speed, memory usage, and antialiasing power between the three various techniques.**
 
-As I increase the supersampling rate, the performance decreases down to about 20fps when resizing the window. Additionally, using bilinear pixel sampling also reduces performance. I noticed that zero level sampling is the fastest form of level sampling, followed by nearest level, and then linear level sampling. Even though 16x antialiasing achieves the best image quality, the performance of the reasterizers drops too much, so it is better to reduce the supersampling because large supersampling will use up a lot of memory storing the scaled buffers. 
+As I increase the supersampling rate, the performance decreases down to about 20fps when resizing the window. Additionally, using bilinear pixel sampling also reduces performance. I noticed that level sampling in combination with the pixel sampling methods changes performance when zooming in and out. Level sampling could help reduce the amount of memory needed to show the image textures due to the varying sizes. Even though 16x antialiasing achieves the best image quality, the performance of the reasterizers drops too much, so it is better to reduce the supersampling because large supersampling will use up a lot of memory storing the scaled buffers. 
 
 **Using a png file you find yourself, show us four versions of the image, using the combinations of L_ZERO and P_NEAREST, L_ZERO and P_LINEAR, L_NEAREST and P_NEAREST, as well as L_NEAREST and P_LINEAR.**
 
@@ -148,4 +148,4 @@ As I increase the supersampling rate, the performance decreases down to about 20
 Here we can see how different combinations of level and pixel sampling change the clarity and image quality.
 
 
-In conclusion, I learned about different sampling methods and rasterizing functions.
+In conclusion, I learned about rasterization, different sampling methods, and rasterizing functions.
