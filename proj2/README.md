@@ -169,13 +169,28 @@ We implemented these rules according to the following articles and website:
 
 ![Part 7](images/cs184_proj2_7_1.png)
 
+For this part, we modeled, imported and shaded a Lego Minifigure and Unity Logo 3D model into MeshEdit. I have prior experience with Blender, so we were able to model additional details on the mesh beyond the humanoid. The Lego minifigure is composed of multiple individual meshes (head, torso, arms, hands, and legs) and were modeled based on reference images of the patent for the figure. We used the techniques of beveling, extruding, and booleans while modeling it. We made sure to add additional edge rings around its edges to ensure that when it would be subdivided, the mesh would not lose its shape. For the Unity Logo, there is a single pattern repeated on three sides, so after modeling that, we just duplicated it on each axis to create it.
+
+After modeling the object in Blender, we attempted to import and view the lego minifigure file into MeshEdit, but ran into multiple unknown errors. After importing the Lego model part by part, we determined that the torso, hands, and legs were causing these issues. Eventually after isolating the torso piece, we received the error that there are self intersecting edges (a non manifold mesh), so we used the “remesh” modifier in blender which rebuilds the mesh’s geometry based on voxels. This changed the topology and prevented self intersecting edges. After applying the remeshing to the hands and legs, we used the decimate modifier to reduce the vertex count without compromising on quality. I ran into strange errors that only occurred on my windows PC where I could not open meshes with boundary edges, so I imported the files into a Mac computer and the mesh loaded up. Finally, we joined the pieces and imported it into MeshEdit, and made necessary rotational adjustments. For the Unity logo, we used a similar process and imported the remeshed model into MeshEdit. 
+
+One issue we ran into was that we modeled these in Blender 3.0, and when we imported them or opened them into an older Blender version 2.7, the mesh would not load up in MeshEdit. To fix this, we exported the meshes from Blender 3.0 as an OBJ file and imported that into the old Blender. We then exported a DAE file from the old Blender. Over the course of importing, editing, and exporting the files across the two Blender versions, we created over 70 obj/dae/blend files.
+
+
+
 ![Part 7](images/cs184_proj2_7_2.png)
 
-**Shaders**
-
-![Part 7](images/cs184_proj2_7_3.png)
 
 ![Part 7](images/lego_shader.gif)
 
 ![Part 7](images/unity_logo_shader.gif)
+
+
+**Shaders**
+
+Once we had the 3D models viewable in MeshEdit, we started creating shaders. At first the shaders were not loading up on a windows PC, and then we incorporated code on Piazza to call the shader code when pressing R. After making modifications to change the file path, the shaders loaded up.
+
+We first examined the given shader code in shaders/frag and then modified the PhongShader functions. After experimenting with the lighting position, RGB vectors, alpha values, and the p parameter (possibly cosine power), we created our own shaders. After learning about additional features in glsl, we tried experimenting with the time variable to create animated shaders, but unfortunately, the time variable remained constant at 0 .We used the mix to create a gradient value and set the parameter to be based on the vertex x/y/z coordinates to create an interpolation between different colors. We then combined a few lights together to create the final shader. In our shader code we set up a few shaders experimenting with the color and alpha values and shader #4 is the final one visible here. 
+
+
+![Part 7](images/cs184_proj2_7_3.png)
 
