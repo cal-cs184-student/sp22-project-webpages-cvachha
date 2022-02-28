@@ -71,9 +71,13 @@ By printing the vertex positions and using the mesh editor selection tools,  we 
 
 **Briefly explain how you implemented the edge flip operation and describe any interesting implementation / debugging tricks you have used.**
 
+![Part 4](images/cs184_proj2_4_diagram.png)
+
 To implement the edge flip operation, I first read the half-edge primer which included a resource on how the half-edge flip works including a labeled diagram that detailed how the face/vertex/edge structure changes. Then I listed the initial mesh components outlined in the diagram. Next, I typed out the reassignments of each component making sure to match them with their corresponding pointers and references to the other relevant components. At first, I had a bug where sometimes a face next to a flipped edge would disappear. I used the MeshEdit interface to keep track of which edges were flipping. I found that in the given dae folder, there were additional files for a cube with each of the operations applied. I then observed the input cube and the flipped edge cube sample files. I also noticed how the edge flips would appear and with which components belonged to each other (by making note of and printing the addresses of the vertices/edges). While debugging, I was unsure how to choose the halfedge of an edge but later realized that any halfedge or its twin would work. After fixing a few small mistakes in the reassignment, the flip operation worked. After testing it on the cube, I noticed that flipping certain edges would cause self intersecting geometry and overlapping faces. After looking over the code, we reasoned that this was expected behavior of the flip operation since the edge flip was still reversible. I also tested this on the teapot and other meshes and the flipping seemed to work
 
 ![Part 4](images/cs184_proj2_4.png)
+
+
 
 ### Part 5: Edge split
 
@@ -85,13 +89,28 @@ Actually, I drew a figure of how those edges, vertices and halfedges change in a
 
 * Reassign the pointers in all these elements according to the figure.
 
-![Part 5](images/cs184_proj2_5_2.png)
+![Part 5](images/cs184_proj2_5_2_horizontal_edited.png)
 
 **Describe any interesting implementation / debugging tricks you have used.**
 
 During the implementation, I encountered a bug that my f3 didn’t show up after an `edgeSplit`. So I use `check_for()` on f3 and all its related elements to see what happened and then I found that one of the halfedge’s `next()` pointed to a wrong halfedge. After I corrected it, everything works fine. So I think `check_for()` the strangely behaviored elements can be a good debugging trick.
 
 ![Part 5](images/cs184_proj2_5.png)
+
+**Boundary Edge Split (Extra Credit)**
+
+Edge split on boundary cases is a little bit different from inner cases. Suppose we are going to split edge e0 on the boundary. Our main idea is shown in the following picture. 
+
+![Part 5](images/cs184_proj2_5_ec_diagram.png)
+
+How to create new elements and reassign pointers is very similar to what we do for inner cases. However, there is one specific element that we need to pay attention to is h_x, which is shown at the bottom of the above figure. If we don’t update h_x->next(), the programme will not work properly. In fact, we didn’t do that at first and our loop subdivision could only perform 1 level subdivision and any higher level will crash the programme.
+
+Here are some results of boundary edge split. (we used beetle.dae here)
+
+![Part 5](images/cs184_proj2_5_ec_boundary.png)
+
+We can see that some boundary edges (at the bottom of the figure) are successfully splitted.
+
 
 ### Part 6: Loop subdivision for mesh upsampling
 
@@ -113,7 +132,7 @@ I implement loop subdivision in the following steps:
 
 I added some output when traversing the original edges to check if there was a dead loop.
 
-
+![Part 6](images/cs184_proj2_6_1.png)
 
 **Take some notes, as well as some screenshots, of your observations on how meshes behave after loop subdivision. What happens to sharp corners and edges? Can you reduce this effect by pre-splitting some edges?**
 
@@ -121,11 +140,42 @@ The sharp corners and edges became smooth and sphere-like after loop subdivision
 
 In order to reduce this smooth effect on the corner, I pre-split all edges that connect to a corner vertex. As is shown in the figure below, after this preprocess, the sharp feature is somewhat preserved after several levels of loop subdivision. It’s kind of isolating the corner with other corners, so during the smoothing operation, the signal response of that corner is somewhat preserved.
 
+![Part 6](images/cs184_proj2_6_2.png)
+
+
 
 **Can you pre-process the cube with edge flips and splits so that the cube subdivides symmetrically?**
+Yes
+
 
 **Extra Credit Boundary Cases**
+
+In our opinion, the most important part for boundary cases in loop subdivision is how to calculate the new position for boundary vertices. In our implementation, we apply the following rules for updating positions of boundary vertices:
+
+
+![Part 6](images/cs184_proj2_6_ec_diagram.png)
+
+
+We implemented these rules according to the following articles and website:
+[1] https://graphics.stanford.edu/~mdfisher/subdivision.html
+[2] Anisimov, Dmitry & Deng, Chongyang & Hormann, Kai. (2016). Subdividing barycentric coordinates. Computer Aided Geometric Design. 43. 10.1016/j.cagd.2016.02.005. 
+
+![Part 6](images/cs184_proj2_6_ec_boundary_v2.png)
+
 
 ## Section III: Optional, possible extra credit
 
 ### Part 7: Design and edit your own mesh!
+
+![Part 7](images/cs184_proj2_7_1.png)
+
+![Part 7](images/cs184_proj2_7_2.png)
+
+**Shaders**
+
+![Part 7](images/cs184_proj2_7_3.png)
+
+![Part 7](images/lego_shader.gif)
+
+![Part 7](images/unity_logo_shader.gif)
+
