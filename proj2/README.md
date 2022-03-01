@@ -5,7 +5,9 @@
 ### URL: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj2/
 
 ## Overview
-Overview
+In this project, we learned the fundamental knowledge for geometric modeling and  implemented de Casteljau's algorithm for Bezier curve evaluation, edge split and loop subdivision functions with boundary cases included. 
+Learning these techniques allowed us to understand how 3D graphics are rendered and calculated. By learning the halfedge data structure, we gained a better understanding on how meshes are represented through code. Working on the mesh operations also reinforced our learning on these topics and how 3D objects here are represented with the given data structures and can be manipulated with pointer assignment. Since I had some experience with modeling in Blender, I was familiar with some of the terms and had experience using some of these tools such as subdivision and smooth shading. While learning shaders, I had previously used Phong shaders in Blender/Maya, but I was able to gain a better understanding on how these materials are rendered from learning glsl.
+
 
 
 ## Section I: Bezier Curves and Surfaces
