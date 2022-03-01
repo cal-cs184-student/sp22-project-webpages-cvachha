@@ -197,7 +197,7 @@ When subdividing the model, I made sure to add bevels and edge loops to make sur
 
 **Shaders**
 
-Once we had the 3D models viewable in MeshEdit, we started creating shaders. At first the shaders were not loading up on a windows PC, and then we incorporated code on Piazza to call the shader code when pressing R. After making modifications to change the file path, the shaders loaded up.
+Once we had the 3D models viewable in MeshEdit, we started creating shaders. At first the shaders were not loading up on a windows PC, and then we incorporated code on Piazza to call the shader code when pressing R and we added this code to `meshEdit.cpp`. After making modifications to change the file path, the shaders loaded up.
 
 We first examined the given shader code in shaders/frag and then modified the `shadePhongColor` functions. After experimenting with the lighting position, RGB vectors, alpha values, and the p parameter (possibly cosine power), we created our own shaders. After learning about additional features in glsl, we tried experimenting with the time variable to create animated shaders, but unfortunately, the time variable remained constant at 0 .We used the mix to create a gradient value and set the parameter to be based on the vertex x/y/z coordinates to create an interpolation between different colors. We then combined a few lights together to create the final shader. In our shader code we set up a few shaders experimenting with the color and alpha values and shader #4 is the final one visible here. 
 
