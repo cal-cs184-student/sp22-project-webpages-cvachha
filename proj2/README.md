@@ -147,7 +147,8 @@ In order to reduce this smooth effect on the corner, I pre-split all edges that 
 
 
 **Can you pre-process the cube with edge flips and splits so that the cube subdivides symmetrically?**
-Yes
+
+We can pre-process the cube to allow for symmetrical subdivisions by splitting the diagonal edge across each face. After subdividing multiple levels, the mesh appears symmetrical. 
 
 
 **Extra Credit Boundary Cases**
