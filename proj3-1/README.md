@@ -2,7 +2,7 @@
 ## Cyrus Vachha and Siming Liu
 ### Spring 2022 
 
-### URL: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj3/
+### URL: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj3-1/
 
 ## Overview
 In this project, 
@@ -71,14 +71,44 @@ As we can see from the table, rendering with bvh can boost the rendering speed b
 
 **Walk through both implementations of the direct lighting function**
 
+In Task 3 and 4 we implemented two forms of direct lighting: with uniform hemisphere sampling and with importance sampling. In uniform hemisphere sampling, we sample from light from a hemisphere of directions, while in importance sampling we sample directly from the light sources.
 
+#### Direct Lighting with Uniform Hemisphere Sampling
+
+We implemented Direct Lighting with Uniform Hemisphere Sampling by using Monte-Carlo to estimate the radiance by taking num_samples lighting samples of incoming rays in `estimate_direct_lighting_hemisphere`. 
+
+We do this by first sampling a direction from the given `hemisphereSampler` which returns a random vector direction with pdf 1/2π. Next, we create a new ray with our sampled direction originating at the hit point (we transformed our ray direction from object to world coordinates). If there is an intersection from that ray, we find the emissive component of the bsdf of the new intersected object. We then evaluate the bsdf of the current object (f_r) which is the albedo of the Lambert material divided by a constant.
+
+Given these values, we use the reflection equation and find the radiance as: (emission value) * f_r * cos(w_i)/p(w_i).
+
+Finally, we find and return the average of these values as `L_out` which gives us an unbiased estimate of the radiance.
+
+#### Direct Lighting by Importance Sampling Lights
+
+We implemented importance sampling by iterating over all the lights in the scene and sampling from them to estimate the radiance in `estimate_direct_lighting_importance`.
+
+For each light, we check whether it is a point light (delta light) or an area light. If it is a point light, we only sample once, else we sample `ns_area_light number` of times. 
+
+We first find the radiance of the light source using `samle_L` which also gives us the direction (wi) and the pdf. Next, we cast a ray from the hit point in the direction of wi (this is our shadow ray) and check if there is an intersection (we transformed our ray direction from world to object coordinates). If there is an intersection before the ray hits the light source, we record the sample as 0. If there isn’t an intersection, we find the radiance using the reflection function as: ns_area_light * (radiance of the light source)* f_r * cos(w_i)/p(w_i).
+
+Finally, we find and return the average of these values as `L_out` which gives us an unbiased estimate of the radiance from importance sampling.
+
+After completing this function, we modified `one_bounce_radiance` to call either hemisphere sampling or importance sampling based on the given parameters. We also modified `est_radiance_global_illumination` to return the radiance of zero bounce radiance + one bounce radiance.
 
 
 **Show some images rendered with both implementations of the direct lighting function**
 
+
+
 **Focus on one particular scene with at least one area light and compare the noise levels in soft shadows when rendering with 1, 4, 16, and 64 light rays (the -l flag) and with 1 sample per pixel (the -s flag) using light sampling, not uniform hemisphere sampling**
 
+
 **Compare the results between uniform hemisphere sampling and lighting sampling in a one-paragraph analysis**
+
+From the above renders, there is a significantly more amount of noise in the uniform sampling compared to the importance sampling. This is in importance sampling, we are only observing the sampling distribution from the lights themselves rather than random directions across the hemisphere. The uniform sampling is noisy since we are randomly sampling different random directions at each pixel and some of them don’t hit the light source so the radiance is zero for some directions); possibly, only a few of them actually hit the light source.
+In importance sampling, we only sample the rays from the directions of the light sources so our radiance is non-zero and our directions actually hit the light source. The light sources will contribute most to the Monte Carlo estimate. Additionally, importance sampling allows for point lights to be visible in the scene.
+
+Looking at the uniformed sampled render, in areas where the diffuse of the lambert material is lighter, the noise is more noticeable and the noise is not noticeable over light sources or the top of the box. In the importance sampled render, due to the lack of noise, the render looks like it is at a higher resolution and the shadow appears softer. Most noticeable, the walls are very clear and appear smooth due to the lack of noise.
 
 
 ## Part 4: Global Illumination
