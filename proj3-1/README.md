@@ -149,14 +149,14 @@ We implement the indirect lighting function in a recursive way. Within each recu
 
 **Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel**
 
-![Part 4](images/direct_indirect_figure_4-1.png)
+![Part 4](images/direct_indirect_figure_4-1_edited2.png)
 
 
 **Pick one scene and compare rendered views first with only direct illumination, then only indirect illumination. Use 1024 samples per pixel. (You will have to edit PathTracer::at_least_one_bounce_radiance(...) in your code to generate these views.)**
 
-![Part 4](images/only_directlighting_indirectlighting_figure_4-2.png)
+![Part 4](images/only_directlighting_indirectlighting_figure_4-2_edited.png)
 
-Take CBbunny.dae as an example. We can see that the ceiling of the Cornell box is totally dark in direct illumination while that in indirect illumination is bright. Another important difference is that we can see the red and blue color on the bunny statue, ceiling and shadow areas, which can be attributed to the light rays bouncing from the wall to those areas. But in direct illumination, color is more monotonous.
+Take CBbunny.dae as an example. We can see that the ceiling of the Cornell box is totally dark in direct illumination while that in indirect-only illumination is bright. Another important difference is that we can see the red and blue color on the bunny statue, ceiling and shadow areas, which can be attributed to the light rays bouncing from the wall to those areas. But in direct illumination, color is more monotonous.
 
 **For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). Use 1024 samples per pixel**
 
