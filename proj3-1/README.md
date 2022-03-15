@@ -12,7 +12,7 @@ In this project,
 
 **Walk through the ray generation and primitive intersection parts of the rendering pipeline**
 
-Ray generation is an important part of geometric modeling. We generate a ray by setting its original position and ray direction. In our implementation for class Camera’s `generate_ray()` function, we first find the corresponding position in the camera's sensor plane given a pixel and calculate the direction vector in the camera’s coordinates. Then we convert this direction vector from the camera's coordinates to the world coordinates by left-multiplying the `o2w` matrix. Note that, as cameras have clipping planes, we also have to set the `nClip` and `fClip` for each ray we generate.
+Ray generation is an important part of geometric modeling. We generate a ray by setting its original position and ray direction. In our implementation for class Camera’s `generate_ray()` function, we first find the corresponding position in the camera's sensor plane given a pixel and calculate the direction vector in the camera’s coordinates. Then we convert this direction vector from the camera's coordinates to the world coordinates by left-multiplying the `o2w` matrix. Note that, as cameras have clipping planes, we also have to set the nClip and fClip for each ray we generate.
 
 Primitive intersection is usually needed in ray tracing. It tells us whether a ray we generate intersects with any primitives in our scene and thus determines how we perform rendering. In our code base, we implemented the ray-triangle intersection, ray-sphere intersection and ray-bbox intersection functions.
 
@@ -20,16 +20,27 @@ Primitive intersection is usually needed in ray tracing. It tells us whether a r
 
 In the Ray-Triangle intersection function, our implementation can be described in the following steps:
 
-1. First check if the ray intersects with the plane that contains the target triangle. If there is no intersection, for example the ray is parallel to the plane, we return false. 
+1. We test if the intersection point is within the triangle using Möller–Trumbore ray-triangle intersection algorithm described in [this slide](https://cs184.eecs.berkeley.edu/sp22/lecture/9-22/ray-tracing). And we can get the value of t and barycentric interpolation coefficients b1, b2 and b3 for P1,P2 and P3. 
 
-2. If there is an intersection, we get the corresponding t value of the intersection and check if the t value is between the ray’s `min_t` and `max_t`. If so, we go to step 3; otherwise, we return false. 
+2. We check if the t is within the ray’s min_t and max_t range. If not, we return false; otherwise, we go to STEP 3;
 
-3. In this step, we test if the intersection point is within the triangle using Möller–Trumbore ray-triangle intersection algorithm described in lecture. If so, we go to step 4; otherwise, we return false.
+3. We check if all the interpolation coefficients are within [0,1]. If not, we return false; otherwise, we go to STEP 4;
 
-4. We set the ray’s `max_t` to this intersection’s t value and update the `*isect` object correspondingly.
+4. We set the ray’s max_t to this intersection’s t value and update the `*isect` object correspondingly.
 
 
 **Show images with normal shading for a few small .dae files**
+
+![Part 1](images/normal_shading_figure_1-1.png)
+
+**An interesting problem we met in this part**
+
+In our first version of triangle-ray intersection implementation, we first calculated the ray-plane intersection according to [this slide](https://cs184.eecs.berkeley.edu/sp22/lecture/9-20/ray-tracing). However, we use the normal of the vertices as the normal of the plane. Although, sometimes they are equal, they are not supposed to be the same thing and  some faces in the scene could disappear when viewed from some specific angles in this way of rendering (just like the CBgems shown below)
+
+We solve this by using (p2-p1)×(p3-p1) as the face’s normal vector. Also, if we directly use the result given by Möller–Trumbore ray-triangle intersection algorithm, the problem will not take place as well. Here is a rendering of the CBgems after we fixed the problem:
+
+![Part 1](images/raytriangleissue_figure_1-2.png)
+
 
 
 ## Part 2: Bounding Volume Hierarchy
@@ -53,6 +64,8 @@ We choose the splitting point in the following way:
 
 **Show images with normal shading for a few large .dae files that you can only render with BVH acceleration.**
 
+
+![Part 2](images/bvh_figure_2.png)
 
 
 **Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis.**
@@ -98,9 +111,12 @@ After completing this function, we modified `one_bounce_radiance` to call either
 
 **Show some images rendered with both implementations of the direct lighting function**
 
+![Part 3](images/direct_lighting_figure_3-1.png)
 
 
 **Focus on one particular scene with at least one area light and compare the noise levels in soft shadows when rendering with 1, 4, 16, and 64 light rays (the -l flag) and with 1 sample per pixel (the -s flag) using light sampling, not uniform hemisphere sampling**
+
+![Part 3](images/varying_light_samples_figure_3-2.png)
 
 
 **Compare the results between uniform hemisphere sampling and lighting sampling in a one-paragraph analysis**
@@ -117,25 +133,42 @@ Looking at the uniformed sampled render, in areas where the diffuse of the lambe
 
 We implement the indirect lighting function in a recursive way. Within each recursive call:
 
-1. We first calculate the intersection point of the input ray. If there is no intersection between the ray and the scene, we return false; otherwise, we calculate the `one_bounce_radiance` at this intersection point (`hit_p`) and assign the value to L_out.
+1. We first get the depth of the input ray. If the `ray_depth` reach the `max_ray_depth` we set, return `L_out`; otherwise, we increment the `ray_depth` by 1 and create a new_ray start at `hit_p` and randomly sample its direction.
 
-2. Then we get the depth of the input ray and increment it by 1. If the ray_depth reach the `max_ray_depth` we set, return `L_out`; otherwise, we create a `new_ray` starting at `hit_p` and random sample its direction;
+
+2. Then we calculate the intersection point of the input ray. If there is no intersection between the ray and the scene, we return false; otherwise, we calculate the `one_bounce_radiance` at this intersection point (`hit_p`) and assign the value to `L_out`.
 
 3. We calculate the intersection between this new_ray and the whole scene. If there is no intersection, we return `L_out`; otherwise, we update the intersection information and do a Russian Roulette;
 
 4. In Russian Roulette, we use the given function called `coin_flip` to decide whether to recurse again or stop. The termination probability we choose is 0.3.
 
+
 5. If the function is not gonna terminate, we call the function itself again and input the `new_ray` and the updated intersection information.
+
 
 
 **Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel**
 
+![Part 4](images/direct_indirect_figure_4-1.png)
+
 
 **Pick one scene and compare rendered views first with only direct illumination, then only indirect illumination. Use 1024 samples per pixel. (You will have to edit PathTracer::at_least_one_bounce_radiance(...) in your code to generate these views.)**
 
+![Part 4](images/only_directlighting_indirectlighting_figure_4-2.png)
+
+Take CBbunny.dae as an example. We can see that the ceiling of the Cornell box is totally dark in direct illumination while that in indirect illumination is bright. Another important difference is that we can see the red and blue color on the bunny statue, ceiling and shadow areas, which can be attributed to the light rays bouncing from the wall to those areas. But in direct illumination, color is more monotonous.
+
 **For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). Use 1024 samples per pixel**
 
+![Part 4](images/max_ray_depth_figure_4-3.png)
+
+As we can see from the above renderings, the scene becomes brighter and brighter with `max_ray_depth` increase. To be specific, m=0 corresponds to zero_bounce condition and m=1 corresponds to direct illumination condition. When m>1, global illumination begins to take effect and the shading becomes more smooth.
+
 **Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays**
+
+![Part 4](images/sample_per_pixel_comparison_figure_4-4.png)
+
+Comparing the above renderings, we notice that there is less and less noise with the number of samples per pixel goes up. Scenes rendered with small s are quite noisy that they look like some very old photos.
 
 ## Part 5: Adaptive Sampling
 
@@ -145,6 +178,9 @@ In order to implement the adaptive sampling, we made some modifications to the `
 
 
 **Pick one scene and render it with at least 2048 samples per pixel. Show a good sampling rate image with clearly visible differences in sampling rate over various regions and pixels. Include both your sample rate image, which shows your how your adaptive sampling changes depending on which part of the image you are rendering, and your noise-free rendered result. Use 1 sample per light and at least 5 for max ray depth**
+
+
+![Part 5](images/adaptive_sampling_figure_5.png)
 
 
 As is shown in the right figure, ceiling, bunny and shadow areas need more samples to converge than the wall and floor.
