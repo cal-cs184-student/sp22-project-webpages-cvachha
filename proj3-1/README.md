@@ -77,7 +77,7 @@ We choose the splitting point in the following way:
 | cow.dae      | 38.71s     | 0.05s    |
 | teapot.dae   | 21.27s     | 0.06s    |
 
-As we can see from the table, rendering with bvh can boost the rendering speed by 3~4 magnitude. Actually, the rendering time for some very complex .dae files (like the `maxplanck.dae` file) is quite similar to those moderately complex files (also within 0.1s). So the bvh structure is very efficient in calculating ray-primitive intersection.
+We rendered the cow.dae and teapot.dae with and without bvh and recorded in the above table the timing for each rendering under each condition. As we can see from the table, rendering with bvh can boost the rendering speed by 3~4 magnitude in moderately complex renderings. Actually, the rendering time for some very complex .dae files (like the `maxplanck.dae` file) is quite similar to those moderately complex files (also within 0.1s). So the bvh structure is very efficient in calculating ray-primitive intersection.
 
 
 
@@ -120,13 +120,14 @@ After completing this function, we modified `one_bounce_radiance` to call either
 
 ![Part 3](images/varying_light_samples_figure_3-2.png)
 
+By varying the light rays from l= 1 to l=64, we can see that the shadow of the bunny becomes smoother and less noisy. Also, the overall noise decreases as the light rays increase.
 
 **Compare the results between uniform hemisphere sampling and lighting sampling in a one-paragraph analysis**
 
-From the above renders, there is a significantly more amount of noise in the uniform sampling compared to the importance sampling. This is in importance sampling, we are only observing the sampling distribution from the lights themselves rather than random directions across the hemisphere. The uniform sampling is noisy since we are randomly sampling different random directions at each pixel and some of them don’t hit the light source so the radiance is zero for some directions); possibly, only a few of them actually hit the light source.
+From the above renders, there is a significantly more amount of noise in the uniform sampling compared to the importance sampling. In importance sampling, we are only observing the sampling distribution from the lights themselves rather than random directions across the hemisphere. The uniform sampling is noisy since we are randomly sampling different random directions at each pixel and some of them don’t hit the light source so the radiance is zero for some directions); possibly, only a few of them actually hit the light source.
 In importance sampling, we only sample the rays from the directions of the light sources so our radiance is non-zero and our directions actually hit the light source. The light sources will contribute most to the Monte Carlo estimate. Additionally, importance sampling allows for point lights to be visible in the scene.
 
-Looking at the uniformed sampled render, in areas where the diffuse of the lambert material is lighter, the noise is more noticeable and the noise is not noticeable over light sources or the top of the box. In the importance sampled render, due to the lack of noise, the render looks like it is at a higher resolution and the shadow appears softer. Most noticeable, the walls are very clear and appear smooth due to the lack of noise.
+Looking at the uniformed sampled render, in areas where the diffuse of the lambert material is lighter, the noise is more noticeable but is not noticeable over light sources or the top of the box. In the importance sampled render, due to the lack of noise, the render looks like it is at a higher resolution and the shadow appears softer. Most noticeable, the walls are very clear and appear smooth due to the lack of noise.
 
 
 ## Part 4: Global Illumination
