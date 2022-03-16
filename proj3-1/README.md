@@ -5,8 +5,8 @@
 ### URL: https://cal-cs184-student.github.io/sp22-project-webpages-cvachha/proj3-1/
 
 ## Overview
-In this project, 
 
+In this project, we learned the fundamentals of ray tracing techniques and global illumination. During the implementation of ray-primitive intersection, BVH trees, Monte Carlo estimation, direct and global illumination and adaptive sampling, we gained a better understanding of the rendering pipeline, especially the geometric modeling part, and how we can improve the reality of a rendered scene through these technologies. We find this project interesting since we have seen these topics and features as part of rendering engines like Blender or Unity, and now we understand how those parts function.
 
 ## Part 1: Ray Generation and Scene Intersection
 
