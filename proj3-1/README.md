@@ -8,6 +8,8 @@
 
 In this project, we learned the fundamentals of ray tracing techniques and global illumination. During the implementation of ray-primitive intersection, BVH trees, Monte Carlo estimation, direct and global illumination and adaptive sampling, we gained a better understanding of the rendering pipeline, especially the geometric modeling part, and how we can improve the reality of a rendered scene through these technologies. We find this project interesting since we have seen these topics and features as part of rendering engines like Blender or Unity, and now we understand how those parts function.
 
+While implementing these parts, we encountered multiple issues that we fixed as we completed the later tasks. One issue we faced was that we noticed dark spots and possible missing faces on some of the meshes which changed as we moved the camera around the object. We fixed this by finding the t-value from the Möller–Trumbore algorithm rather than the ray-plane intersection formula. While fixing the previous issue, we also fixed an issue where we had not set the normals of the intersection as the barycentric interpolation since we believed that all vertex normals were constant across the plane. In addition, when implementing the global illumination, we check the depth of a ray after computing one bounce and this will make zero_bounce condition the same as one_bounce condition, which is not expected. And we fixed this problem by checking the ray depth before we computed one bounce. Implementing the path tracing was at first challenging but once we did so, we were able to further understand the reflectance equation and were able to implement the following parts starting with a clearer understanding.
+
 ## Part 1: Ray Generation and Scene Intersection
 
 **Walk through the ray generation and primitive intersection parts of the rendering pipeline**
@@ -22,7 +24,7 @@ In the Ray-Triangle intersection function, our implementation can be described i
 
 1. We test if the intersection point is within the triangle using Möller–Trumbore ray-triangle intersection algorithm described in [this slide](https://cs184.eecs.berkeley.edu/sp22/lecture/9-22/ray-tracing). And we can get the value of t and barycentric interpolation coefficients b1, b2 and b3 for P1,P2 and P3. 
 
-2. We check if the t is within the ray’s min_t and max_t range. If not, we return false; otherwise, we go to STEP 3;
+2. We check if the t is within the ray’s `min_t` and `max_t` range. If not, we return false; otherwise, we go to STEP 3;
 
 3. We check if all the interpolation coefficients are within [0,1]. If not, we return false; otherwise, we go to STEP 4;
 
