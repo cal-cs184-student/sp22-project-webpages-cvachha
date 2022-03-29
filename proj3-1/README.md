@@ -1,4 +1,4 @@
-# CS184 Project 3-1 Rasterizer
+# CS184 Project 3-1 Pathtracer
 ## Cyrus Vachha and Siming Liu
 ### Spring 2022 
 
