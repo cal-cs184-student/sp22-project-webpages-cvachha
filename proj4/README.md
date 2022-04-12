@@ -6,7 +6,7 @@
 
 ## Overview
 
-In this assignment, we simulate some basic physics scenes of cloth including the pure cloth mesh, hanging by two pinned corners, falling on the plane, covering a ball, self-collision and different shaders. In order to simulate the physics, we build a grid of pointMass objects and add strings between them to represent the cloth. To accelerate the collision check, we voxelize the space into boxes and build a spatial hash map that maps each point into its closest box, after which we only need to check the corresponding box for a given point for collision check. We create simulations for the cloth to interact with planes, spheres, and itself by mainupulating pointMass positions. We then implement six GLSL shader materials commonly found in computer graphics rendering: diffuse, blinn-phong, texture mapping, bump, displacement, and mirror/environmental reflective. Using the geometery and camera properties, we can create these different materials. We find this project helpful in reinforcing how different kinds of meshes can be created and this introduces us to physical simulations. We also find it interesting to implement shaders that are commonly used in graphics rendering/animation.
+In this assignment, we simulate some basic physics scenes of cloth including the pure cloth mesh, hanging by two pinned corners, falling on the plane, covering a ball, self-collision and different shaders. In order to simulate the physics, we build a grid of pointMass objects and add strings between them to represent the cloth. To accelerate the collision check, we voxelize the space into boxes and build a spatial hash map that maps each point into its closest box, after which we only need to check the corresponding box for a given point for collision check. We create simulations for the cloth to interact with planes, spheres, and itself by mainipulating pointMass positions. We then implement six GLSL shader materials commonly found in computer graphics rendering: diffuse, blinn-phong, texture mapping, bump, displacement, and mirror/environmental reflective. Using the geometry and camera properties, we can create these different materials. We find this project helpful in reinforcing how different kinds of meshes can be created and this introduces us to physical simulations. We also find it interesting to implement shaders that are commonly used in graphics rendering/animation.
 
 ## Part 1: Masses and springs
 
@@ -169,9 +169,13 @@ As we can see, as we increase the mesh resolution, the displacement map is more 
 
 We can see that the shader is reflecting the cubemap environment.
 
+
+## Extra Credit Custom Shader
+
+![Part 5 EC](images/cs184_proj4_part5_customshader.png)
+
 **Explain what you did in your custom shader, if you made one.**
 
+We created a painting shader by combining the blinn-phong, bump, mirror, and texture mapping shaders. We make the texture mapped image the same as the bump map to create a sense of depth from the painting layers. We also added the ability to change the color of the painting shader with the given color wheel: u_color. The shader has a mirror environmental reflection component added to the output color but scaled by 0.1 to ensure the reflection does not overshadow the painting. We also scaled down the color wheel input so the colors of the shader are not too bright. By appropriately scaling the shader components, we could combine the shaders to create a new material. We renamed our custom image file as `texture_3.png` in the textures folder to run this since our shader code references the third texture. 
 
-
-## Part 6: Extra Credit
 
