@@ -19,8 +19,13 @@ We also met a very interesting problem in the initialization part. At the beginn
 
 **Take some screenshots of scene/pinned2.json from a viewing angle where you can clearly see the cloth wireframe to show the structure of your point masses and springs.**
 
+![Part 1](images/cs184_proj4_part1_1.png)
+
 
 **Show us what the wireframe looks like (1) without any shearing constraints, (2) with only shearing constraints, and (3) with all constraints.**
+
+![Part 1](images/cs184_proj4_part1_2.png)
+
 
 ## Part 2: Simulation via numerical integration
 
@@ -28,9 +33,14 @@ We also met a very interesting problem in the initialization part. At the beginn
 
 **Describe the effects of changing the spring constant `ks`; how does the cloth behave from start to rest with a very low `ks`? A high `ks`?**
 
+![Part 2](images/cs184_proj4_part2_1.png)
+
 The higher the ks, the larger the amplitude of the waves on the cloth during the process of falling down.
 
 **What about for density?**
+
+![Part 2](images/cs184_proj4_part2_2.png)
+
 
 The higher the density, the deeper the valley between the two pinned corners. The higher the density, the more visible waves during the process of falling down.
 
@@ -45,6 +55,9 @@ Other differences are described in the above question’s answer and provided in
 
 **Show us a screenshot of your shaded cloth from scene/pinned4.json in its final resting state! If you choose to use different parameters than the default ones, please list them.**
 
+![Part 2](images/cs184_proj4_part2_3.png)
+
+
 ## Part 3: Handling collisions with other objects
 
 **Implementation**
@@ -58,10 +71,13 @@ In the sphere’s collision check, we met a problem that the cloth slipped down 
 
 **Show us screenshots of your shaded cloth from scene/sphere.json in its final resting state on the sphere using the default `ks` = 5000 as well as with `ks` = 500 and `ks` = 50000. Describe the differences in the results.**
 
+![Part 3](images/cs184_proj4_part3.png)
+
 When we set the `ks` = 500, we see that the cloth droops further and is longer. As ks increases, the cloth becomes more rigid and less loose. This is because we are changing the spring constant k which represents how rigid the spring is according to Hooke’s law.
 
 **Show us a screenshot of your shaded cloth lying peacefully at rest on the plane. If you haven't by now, feel free to express your colorful creativity with the cloth! (You will need to complete the shaders portion first to show custom colors.)**
 
+![Part 3](images/cs184_proj4_part3_2.png)
 
 
 ## Part 4: Handling self-collisions
@@ -72,15 +88,15 @@ In this part, we implemented the space hashing and self-collision check. The bas
 
 **Show us at least 3 screenshots that document how your cloth falls and folds on itself, starting with an early, initial self-collision and ending with the cloth at a more restful state (even if it is still slightly bouncy on the ground).**
 
-Three screenshots of the simulation without self-collision
+![Part 4](images/cs184_proj4_part4_1.png)
 
 We can clearly see that, without self collision check, a corner of the cloth penetrate through itself near the end of the simulation.
-
-Three screenshots of the simulation with self-collision
 
 After we apply the self-collision check, the cloth will normally fold and one part can layer on the others rather than penetrate.
 
 **Vary the density as well as ks and describe with words and screenshots how they affect the behavior of the cloth as it falls on itself.**
+
+![Part 4](images/cs184_proj4_part4_2.png)
 
 The higher the density the less likely the cloth will expand into a large area after falling onto the plane.
 
@@ -92,11 +108,16 @@ The higher the ks, the more like that the cloth will expand into a larger area a
 
 **Implementation**
 
+![Part 5](images/cs184_proj4_part5_diffuse.png)
+
 Diffuse: To implement diffuse shading, we used the given diffuse lighting equation from lecture (L_d = k_d(I/r^2)max(0,n * l). Given the normal vector, and the positions of the light and vertices we can find the output color based on the light intensity. We also assigned k_d, the diffuse constant to be u_color, which is the input color wheel in the GUI to allow users to change the color.
 
-Phong: To implement the blinn-phong shader, we used the given equation from lecture (L = k_a*I_a + k_d (I/r^2) max(0,n *l) + k_s(I/r^2)max(0,n*h)^p. This equation is composed of the ambient, diffuse, and specular components which in combination account for the full blinn-phong shader. The specular component depends on the camera position and the diffuse component is the same as the previous diffuse shader.
+
+Phong: To implement the blinn-phong shader, we used the given equation from lecture (L = k_a\*I_a + k_d (I/r^2) max(0,n \*l) + k_s(I/r^2)max(0,n\*h)^p. This equation is composed of the ambient, diffuse, and specular components which in combination account for the full blinn-phong shader. The specular component depends on the camera position and the diffuse component is the same as the previous diffuse shader.
 
 Texture: To implement the texture shader, we sampled the given texture with the given uv coordinates to properly view the image across the mesh which was about a line. We noticed that the textures must be a square shape for it to look proper.
+
+![Part 5](images/cs184_proj4_part5_tex.png)
 
 Bump: To implement the bump shader, we first computed the tangent-bitangent-normal (TBN) matrix which allows us to calculate the vectors in model space. To compute this, we converted the normal and tangent vectors to vec3 and found the b vector (their cross product). Next, we calculated dU and dV which represents the change in the normal magnitude in the u and v axis based on the bump map (we used the red component from the bump map). We then multiply the original normal vector with the TBN to get the displaced normal vector by matrix vector multiplication. Finally, we re-use the blinn-phong shader and use the new displaced normal vector. The result is that the shader makes it appear there is additional texturing and detail on mesh.
 
@@ -108,20 +129,31 @@ Environment-mapped Reflections: To implement the environment-mapped mirror shade
 
 **Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.**
 
+A shader program is used to create materials and shading in scenes with 3D objects which uses the GPU. In this project we implement these materials in GLSL which is composed of vertex shaders and framgent shaders. The vertex shaders influence the mesh such as manipulating vertex positions or normals. The fragment shaders output the final color of the view given the attributes from the vertex shader. In combination, these shaders can create intricate materials based on the geometric components of a mesh. 
 
 **Explain the Blinn-Phong shading model in your own words. Show a screenshot of your Blinn-Phong shader outputting only the ambient component, a screen shot only outputting the diffuse component, a screen shot only outputting the specular component, and one using the entire Blinn-Phong model.**
 
+![Part 5](images/cs184_proj4_part5_phongs.png)
+
+This material is composed of ambient, diffuse, and specular components which in combination account for the full blinn-phong shader. The specular component depends on the camera position and the diffuse component is the same as the previous diffuse shader. This makes it appear that there is a light source reflecting across the mesh.
 
 **Show a screenshot of your texture mapping shader using your own custom texture by modifying the textures in /textures/.**
 
+![Part 5](images/cs184_proj4_part5_tex2.png)
 
 
 **Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that's not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh's coarseness by using -o 16 -a 16 and then -o 128 -a 128.**
+
+![Part 5](images/cs184_proj4_part5_bumpdisplacement.png)
+
+![Part 5](images/cs184_proj4_part5_bd_coarseness.png)
 
 As we can see, as we increase the mesh resolution, the displacement map is more visible and we can see the hard edges of the brick pattern along the sphere.
 
 
 **Show a screenshot of your mirror shader on the cloth and on the sphere.**
+
+![Part 5](images/cs184_proj4_part5_mirror.png)
 
 
 **Explain what you did in your custom shader, if you made one.**
