@@ -84,12 +84,13 @@ In the sphere’s collision check, we met a problem that the cloth slipped down 
 
 ![Part 3](images/cs184_proj4_part3.png)
 
-When we set the `ks` = 500, we see that the cloth droops further and is longer. As ks increases, the cloth becomes more rigid and less loose. This is because we are changing the spring constant k which represents how rigid the spring is according to Hooke’s law.
+When we set the `ks` = 500, we see that the cloth droops further and is longer. As ks increases up to 50000, the cloth becomes more rigid and less loose. This is because we are changing the spring constant k which represents how rigid the spring is according to Hooke’s law.
 
 **Show us a screenshot of your shaded cloth lying peacefully at rest on the plane. If you haven't by now, feel free to express your colorful creativity with the cloth! (You will need to complete the shaders portion first to show custom colors.)**
 
-![Part 3](images/cs184_proj4_part3_2.png)
+![Part 3](images/cs184_proj4_part3_2v2.png)
 
+Here the cloth with a red phong material is resting on a plane.
 
 ## Part 4: Handling self-collisions
 
@@ -134,8 +135,6 @@ The higher the ks, the more like that the cloth will expand into a larger area a
 
 **Environment-mapped Reflections:** To implement the environment-mapped mirror shader, we first calculated the outgoing eye-ray w_o (based on the camera and vertex positions) and reflected it across the vertex normal and sampled this incoming vector from the environment cubemap image. We noticed an issue where the mirror shader did not reflect properly in the selfCollision scene. We fixed this by normalizing the vec3 version of `v_normal`.
 
-
-
 **Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.**
 
 A shader program is used to create materials and shading in scenes with 3D objects which uses the GPU. In this project we implement these materials in GLSL which is composed of vertex shaders and framgent shaders. The vertex shaders influence the mesh such as manipulating vertex positions or normals. The fragment shaders output the final color of the view given the attributes from the vertex shader. In combination, these shaders can create intricate materials based on the geometric components of a mesh. 
@@ -150,10 +149,14 @@ This material is composed of ambient, diffuse, and specular components which in 
 
 ![Part 5](images/cs184_proj4_part5_tex2.png)
 
+This is with a custom image texture.
+
 
 **Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that's not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh's coarseness by using -o 16 -a 16 and then -o 128 -a 128.**
 
 ![Part 5](images/cs184_proj4_part5_bumpdisplacement.png)
+
+We can see that the displacement map changes the geometry of the sphere and cloth.
 
 ![Part 5](images/cs184_proj4_part5_bd_coarseness.png)
 
