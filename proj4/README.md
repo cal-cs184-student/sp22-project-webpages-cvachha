@@ -6,7 +6,7 @@
 
 ## Overview
 
-In this assignment, we simulate some basic physics scenes of cloth including the pure cloth mesh, hanging by two pinned corners, falling on the plane, covering a ball, self-collision and different shaders. In order to simulate the physics, we build a grid of pointMass objects and add strings between them to represent the cloth. To accelerate the collision check, we voxelize the space into boxes and build a spatial hash map that maps each point into its closest box, after which we only need to check the corresponding box for a given point for collision check. 
+In this assignment, we simulate some basic physics scenes of cloth including the pure cloth mesh, hanging by two pinned corners, falling on the plane, covering a ball, self-collision and different shaders. In order to simulate the physics, we build a grid of pointMass objects and add strings between them to represent the cloth. To accelerate the collision check, we voxelize the space into boxes and build a spatial hash map that maps each point into its closest box, after which we only need to check the corresponding box for a given point for collision check. We create simulations for the cloth to interact with planes, spheres, and itself by mainupulating pointMass positions. We then implement six GLSL shader materials commonly found in computer graphics rendering: diffuse, blinn-phong, texture mapping, bump, displacement, and mirror/environmental reflective. Using the geometery and camera properties, we can create these different materials. We find this project helpful in reinforcing how different kinds of meshes can be created and this introduces us to physical simulations. We also find it interesting to implement shaders that are commonly used in graphics rendering/animation.
 
 ## Part 1: Masses and springs
 
@@ -30,6 +30,17 @@ We also met a very interesting problem in the initialization part. At the beginn
 ## Part 2: Simulation via numerical integration
 
 **Implementation**
+
+In this part, we simulate the falling down process of a piece of cloth with two corners pinned. The implementation of this part can be mainly divided into three phases: 
+1. Apply Forces (external force + internal force):
+In this phase, we first calculate all the external forces via external acceleration times the mass of each point. Then we calculate the internal force by traversing all the spring objects and using Hooke's Law.
+
+2. Move point mass:
+We update the position of each point mass via Verlet integration. We first calculate the acceleration of each point mass using force/mass. And then we approximate the integration using the last and current position, time step and the acceleration, with loss of energy considered and represented via a damping term d.
+
+3. Constrain position updates:
+We follow the idea of SIGGRAPH 1995 Provot paper to add constraints on the length of springs at the end of each time step during the simulation. For each spring, we hope the result length won’t be 10% longer than the rest length. The exceeding part of all the springs connected to a point mass will be added to the correction vector. After the correction vector is calculated, we adjust the position of the point mass by adding the correction vector to the last position of the point mass..
+
 
 **Describe the effects of changing the spring constant `ks`; how does the cloth behave from start to rest with a very low `ks`? A high `ks`?**
 
@@ -102,28 +113,26 @@ The higher the density the less likely the cloth will expand into a large area a
 
 The higher the ks, the more like that the cloth will expand into a larger area and tends to recover into its original shape.
 
-
-
 ## Part 5: Shaders
 
 **Implementation**
 
 ![Part 5](images/cs184_proj4_part5_diffuse.png)
 
-Diffuse: To implement diffuse shading, we used the given diffuse lighting equation from lecture (L_d = k_d(I/r^2)max(0,n * l). Given the normal vector, and the positions of the light and vertices we can find the output color based on the light intensity. We also assigned k_d, the diffuse constant to be u_color, which is the input color wheel in the GUI to allow users to change the color.
+**Diffuse:** To implement diffuse shading, we used the given diffuse lighting equation from lecture (L_d = k_d(I/r^2)max(0,n \* l). Given the normal vector, and the positions of the light and vertices we can find the output color based on the light intensity. We also assigned k_d, the diffuse constant to be u_color, which is the input color wheel in the GUI to allow users to change the color.
 
 
-Phong: To implement the blinn-phong shader, we used the given equation from lecture (L = k_a\*I_a + k_d (I/r^2) max(0,n \*l) + k_s(I/r^2)max(0,n\*h)^p. This equation is composed of the ambient, diffuse, and specular components which in combination account for the full blinn-phong shader. The specular component depends on the camera position and the diffuse component is the same as the previous diffuse shader.
+**Phong:** To implement the blinn-phong shader, we used the given equation from lecture (L = k_a\*I_a + k_d (I/r^2) max(0,n \*l) + k_s(I/r^2)max(0,n\*h)^p. This equation is composed of the ambient, diffuse, and specular components which in combination account for the full blinn-phong shader. The specular component depends on the camera position and the diffuse component is the same as the previous diffuse shader.
 
-Texture: To implement the texture shader, we sampled the given texture with the given uv coordinates to properly view the image across the mesh which was about a line. We noticed that the textures must be a square shape for it to look proper.
+**Texture:** To implement the texture shader, we sampled the given texture with the given uv coordinates to properly view the image across the mesh which was about a line. We noticed that the textures must be a square shape for it to look proper.
 
 ![Part 5](images/cs184_proj4_part5_tex.png)
 
-Bump: To implement the bump shader, we first computed the tangent-bitangent-normal (TBN) matrix which allows us to calculate the vectors in model space. To compute this, we converted the normal and tangent vectors to vec3 and found the b vector (their cross product). Next, we calculated dU and dV which represents the change in the normal magnitude in the u and v axis based on the bump map (we used the red component from the bump map). We then multiply the original normal vector with the TBN to get the displaced normal vector by matrix vector multiplication. Finally, we re-use the blinn-phong shader and use the new displaced normal vector. The result is that the shader makes it appear there is additional texturing and detail on mesh.
+**Bump:** To implement the bump shader, we first computed the tangent-bitangent-normal (TBN) matrix which allows us to calculate the vectors in model space. To compute this, we converted the normal and tangent vectors to vec3 and found the b vector (their cross product). Next, we calculated dU and dV which represents the change in the normal magnitude in the u and v axis based on the bump map (we used the red component from the bump map). We then multiply the original normal vector with the TBN to get the displaced normal vector by matrix vector multiplication. Finally, we re-use the blinn-phong shader and use the new displaced normal vector. The result is that the shader makes it appear there is additional texturing and detail on mesh.
 
-Displacement: To implement the displacement shader, we re-used the bump shader in the previous part for the displacement.frag (to output the color). We then followed the same steps to calculate the displaced normal and then modify the gl_Position to move the vertex position along the displaced normal based on the red chanel of the displacement map texture using the given equation: p’ = p+n*h(u,v)*k_h.
+**Displacement:** To implement the displacement shader, we re-used the bump shader in the previous part for the displacement.frag (to output the color). We then followed the same steps to calculate the displaced normal and then modify the gl_Position to move the vertex position along the displaced normal based on the red chanel of the displacement map texture using the given equation: p’ = p+n\*h(u,v)\*k_h.
 
-Environment-mapped Reflections: To implement the environment-mapped mirror shader, we first calculated the outgoing eye-ray w_o (based on the camera and vertex positions) and reflected it across the vertex normal and sampled this incoming vector from the environment cubemap image. We noticed an issue where the mirror shader did not reflect properly in the selfCollision scene. We fixed this by normalizing the vec3 version of `v_normal`.
+**Environment-mapped Reflections:** To implement the environment-mapped mirror shader, we first calculated the outgoing eye-ray w_o (based on the camera and vertex positions) and reflected it across the vertex normal and sampled this incoming vector from the environment cubemap image. We noticed an issue where the mirror shader did not reflect properly in the selfCollision scene. We fixed this by normalizing the vec3 version of `v_normal`.
 
 
 
@@ -148,13 +157,14 @@ This material is composed of ambient, diffuse, and specular components which in 
 
 ![Part 5](images/cs184_proj4_part5_bd_coarseness.png)
 
-As we can see, as we increase the mesh resolution, the displacement map is more visible and we can see the hard edges of the brick pattern along the sphere.
+As we can see, as we increase the mesh resolution, the displacement map is more visible and we can see the hard edges of the brick pattern along the sphere with 128 coarseness. The sphere with a lower resolution (8 coarseness) is blockier and it is not able to properly display all the detail of the displacement map.
 
 
 **Show a screenshot of your mirror shader on the cloth and on the sphere.**
 
 ![Part 5](images/cs184_proj4_part5_mirror.png)
 
+We can see that the shader is reflecting the cubemap environment.
 
 **Explain what you did in your custom shader, if you made one.**
 
